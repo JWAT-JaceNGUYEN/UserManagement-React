@@ -1,14 +1,14 @@
 import { useState } from "react";
-import type { User } from "../../types/user.type";
 import ConfirmInline from "./ConfirmInLine";
+import { useUserStore } from "../../store/user.store";
 
-interface Props {
-  users: User[];
-  onUpdate: (id: number, name: string) => void;
-  onDelete: (id: number) => void;
-}
 
-export default function UserTable({ users, onUpdate, onDelete }: Props) {
+export default function UserTable() {
+
+  const users = useUserStore(state => state.users);
+  const onUpdate = useUserStore(state => state.updateUser);
+  const onDelete = useUserStore(state => state.deleteUser);
+
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
   const [confirmId, setConfirmId] = useState<number | null>(null);

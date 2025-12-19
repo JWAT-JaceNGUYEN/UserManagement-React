@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { useUserStore } from "../../store/user.store";
 
-interface Props {
-  onAdd: (name: string) => void;
-}
 
-export default function UserForm({ onAdd }: Props) {
+export default function UserForm() {
+
+  const addUser = useUserStore(state => state.addUser);
   const [name, setName] = useState("");
 
   const submit = () => {
     if (!name.trim()) return;
-    onAdd(name);
+    addUser(name);
     setName("");
   };
 
