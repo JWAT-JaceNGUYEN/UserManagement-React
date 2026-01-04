@@ -1,41 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmInline from "./ConfirmInLine";
 import { useUserStore } from "../../store/user.store";
 
-
 export default function UserTable() {
-
-  const users = useUserStore(state => state.users);
-  const onUpdate = useUserStore(state => state.updateUser);
-  const onDelete = useUserStore(state => state.deleteUser);
+  const users = useUserStore((state) => state.users);
+  const fetchUsers = useUserStore((state) => state.fetchUsers);
+  const onUpdate = useUserStore((state) => state.updateUser);
+  const onDelete = useUserStore((state) => state.deleteUser);
 
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingName, setEditingName] = useState("");
+  const [editingUsername, setEditingUsername] = useState("");
   const [confirmId, setConfirmId] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   return (
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th>User Name</th>
+          <th>Username</th>
           <th style={{ width: 260 }}>Action</th>
         </tr>
       </thead>
 
       <tbody>
-        {users.map(user => (
+        {users.map((user) => (
           <tr key={user.id}>
             <td>{user.id}</td>
 
             <td>
               {editingId === user.id ? (
                 <input
-                  value={editingName}
-                  onChange={e => setEditingName(e.target.value)}
+                  value={editingUsername}
+                  onChange={(e) => setEditingUsername(e.target.value)}
                 />
               ) : (
-                user.name
+                user.username
               )}
             </td>
 
@@ -45,7 +48,12 @@ export default function UserTable() {
                 <button
                   className="btn success"
                   onClick={() => {
-                    onUpdate(user.id, editingName);
+                    if (!user.id) return;
+                    onUpdate({
+                      id: user.id,
+                      username: editingUsername,
+                      email: user.email,
+                    });
                     setEditingId(null);
                   }}
                 >
@@ -55,8 +63,8 @@ export default function UserTable() {
                 <button
                   className="btn"
                   onClick={() => {
-                    setEditingId(user.id);
-                    setEditingName(user.name);
+                    setEditingId(user.id!);
+                    setEditingUsername(user.username);
                   }}
                 >
                   Edit
@@ -67,7 +75,7 @@ export default function UserTable() {
               {confirmId === user.id ? (
                 <ConfirmInline
                   onConfirm={() => {
-                    onDelete(user.id);
+                    onDelete(user.id!);
                     setConfirmId(null);
                   }}
                   onCancel={() => setConfirmId(null)}
@@ -75,7 +83,7 @@ export default function UserTable() {
               ) : (
                 <button
                   className="btn danger"
-                  onClick={() => setConfirmId(user.id)}
+                  onClick={() => setConfirmId(user.id!)}
                 >
                   Delete
                 </button>

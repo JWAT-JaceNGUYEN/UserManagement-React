@@ -1,3 +1,4 @@
+import LogoutButton from "../components/LogoutButton";
 import UserForm from "../components/users/UserForm";
 import UserTable from "../components/users/UserTable";
 
@@ -6,8 +7,9 @@ export default function UserManagement() {
     <div>
       <div className="page-title">User Management</div>
 
-      <UserForm/>
-      <UserTable/>
+      <UserForm />
+      <UserTable />
+      <LogoutButton />
     </div>
   );
 }
